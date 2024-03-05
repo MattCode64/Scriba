@@ -24,7 +24,7 @@ def transcribe_audio(file: UploadFile = File(...)):
 
     audio = speech_recognition.load_audio_file(temp_audio.name)
 
-    transcription = speech_recognition.transcribe(audio)
+    transcription = speech_recognition.transcribe(speech_recognition.load_model(), audio)
 
     transcript_file_path = NamedTemporaryFile(delete=False, suffix=".txt").name
 

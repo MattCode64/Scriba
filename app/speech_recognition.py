@@ -7,6 +7,10 @@ def load_audio_file(audio_path):
     return audio.raw_data
 
 
+def load_model(model_name="base"):
+    return whisper.load_model(model_name)
+
+
 def transcribe(model, audio):
     options = {
         "language": "fr",  # Specify the French language
@@ -23,9 +27,9 @@ def save_transcription(transcription, file_path="../transcription.txt"):
 
 
 def main():
-    whisper_model = whisper.load_model("base")
     audio_path = "../audiotest.mp3"
     load_audio_file(audio_path)
+    whisper_model = load_model()
     save_transcription(transcribe(whisper_model, audio_path))
 
 
