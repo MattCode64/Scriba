@@ -1,8 +1,8 @@
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
 from app import speech_recognition
-import shutil
-from tempfile import NamedTemporaryFile
+import tempfile
 
 app = FastAPI()
 
@@ -17,17 +17,29 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 
-@app.post("/transcribe")
-def transcribe_audio(file: UploadFile = File(...)):
-    with NamedTemporaryFile(delete=False) as temp_audio:
-        shutil.copyfileobj(file.file, temp_audio)
+@app.post("/lenfile")
+async def lenfile(file: bytes = File(...)):
+    return {"file_size": len(file)}
 
-    audio = speech_recognition.load_audio_file(temp_audio.name)
 
-    transcription = speech_recognition.transcribe(speech_recognition.load_model(), audio)
+@app.post("/transcribe/")
+async def transcribe_audio(file: UploadFile = File(...)):
+    if not file:
+        raise HTTPException(status_code=400, detail="No file provided")
 
-    transcript_file_path = NamedTemporaryFile(delete=False, suffix=".txt").name
+    results = []
 
-    speech_recognition.save_transcription(transcription, transcript_file_path)
+    with tempfile.NamedTemporaryFile(delete=True) as temp_audio:
+        with open(temp_audio.name, "wb") as audio_file:
+            audio_file.write(file.file.read())
 
-    return FileResponse(path=transcript_file_path, filename="transcription.txt", media_type='text/plain')
+        # Load the Whisper model
+        result = speech_recognition.transcribe(speech_recognition.load_model(), temp_audio.name)
+        results.append(
+            {
+                "file_name": file.filename,
+                "transcription": result,
+            }
+        )
+
+    return JSONResponse(content={"results": results})

@@ -5,23 +5,26 @@ from pydub import AudioSegment
 
 def load_audio_file(audio_path):
     audio = AudioSegment.from_mp3(audio_path)
-    samples = np.array(audio.get_array_of_samples())
-    if audio.channels == 2:
-        samples = samples.reshape((-1, 2))
-    return samples.astype(np.float32), audio.frame_rate
+    # Convertir les données audio en un tableau numpy avec le type float32
+    audio_data = np.array(audio.get_array_of_samples(), dtype=np.float32)
+    # Normaliser les données audio pour qu'elles soient entre -1.0 et 1.0
+    audio_data = audio_data / (2**15)
+    # Reshape l'audio pour avoir 1 canal car Whisper s'attend à ce format
+    audio_data = audio_data.reshape((-1, 1))
+    return audio_data
 
 
 def load_model(model_name="base"):
     return whisper.load_model(model_name)
 
 
-def transcribe(model, audio) -> str:
+def transcribe(model, audio):
     options = {
         "language": "fr",  # Specify the French language
     }
     print("Transcribing audio...")
-    print(f"Audio type: {type(audio)}")
-    text_transcribe = model.transcribe(audio, **options, fp16=False, verbose=True)
+    text_transcribe = model.transcribe(audio, **options, fp16=False)
+    print("Transcription completed!")
     return text_transcribe["text"]
 
 
