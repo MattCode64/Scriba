@@ -1,31 +1,24 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from app import speech_recognition
 import tempfile
 
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
-@app.post("/lenfile")
-async def lenfile(file: bytes = File(...)):
-    return {"file_size": len(file)}
+@app.get("/", response_class=RedirectResponse)
+async def redirect_to_docs():
+    return "/docs"
 
 
 @app.post("/transcribe/")
 async def transcribe_audio(file: UploadFile = File(...)):
     if not file:
         raise HTTPException(status_code=400, detail="No file provided")
+
+    if not file.filename.endswith(".mp3"):
+        raise HTTPException(status_code=400, detail="Only .mp3 files are supported")
 
     results = []
 
