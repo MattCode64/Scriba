@@ -4,7 +4,7 @@ from pydub import AudioSegment
 
 def load_audio_file(audio_path):
     audio = AudioSegment.from_mp3(audio_path)
-    return audio
+    return audio.raw_data
 
 
 def transcribe(model, audio):
@@ -16,7 +16,7 @@ def transcribe(model, audio):
     return text_transcribe["text"]
 
 
-def save_transcription(transcription, file_path="transcription.txt"):
+def save_transcription(transcription, file_path="../transcription.txt"):
     print("Saving transcription...")
     with open(file_path, "w", encoding='utf-8') as txt_file:
         txt_file.write(transcription)

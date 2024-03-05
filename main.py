@@ -1,4 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
+from app import speech_recognition
+import shutil
+from tempfile import NamedTemporaryFile
 
 app = FastAPI()
 
