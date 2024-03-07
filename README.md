@@ -1,44 +1,54 @@
 # SCRIBA
 
-This is a backend API developed using FastAPI and Python. It includes an endpoint for transcribing audio files.
+## Description
 
-## Getting Started
+SCRIBA is a web application that transcribes audio files. It supports .mp3 files and provides the transcription results in a user-friendly interface.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-### Prerequisites
+## Technologies Used
 
 - Python
-- pip
+- Whisper (OpenAI's Speech-to-Text API)
 - FastAPI
+- Vue.js
 
-### Installing
+## Installation
 
-A step by step series of examples that tell you how to get a development environment running.
+### Backend
+
+1. Navigate to the backend directory.
+2. Install the required Python packages using pip:
 
 ```bash
-pip install fastapi
-pip install uvicorn[standard]
+pip install -r requirements.txt
 ```
 
-### Running the Application
-
-To run the application, execute the following command:
+3. Run the FastAPI server:
 
 ```bash
 uvicorn main:app --reload
 ```
 
-## API Endpoints
+### Frontend
 
-- GET /: Returns a welcome message
-- POST /transcribe: Transcribes an audio file and returns the text
+1. Navigate to the frontend directory.
+2. Install the required Node.js packages using npm:
 
-## Built With
+```bash
+npm install
+```
 
-- [FastAPI](https://fastapi.tiangolo.com/) - The web framework used
-- [Python](https://www.python.org/) - The programming language used
+3. Run the Vue.js server:
+
+```bash
+npm run serve
+```
+
+## Usage
+
+1. Open the web application in your browser.
+2. Upload an audio file.
+3. Wait for the transcription to complete.
 
 ## Authors
 
-- **Matthieu F**
+- [Matthieu F](https://www.linkedin.com/in/matthieu-freire/)
